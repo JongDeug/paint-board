@@ -1,10 +1,10 @@
-import { AbstractPaintBoardMenu } from './PaintBoardMenu.js';
+import { PaintBoardMenu } from './PaintBoardMenu.js';
 
 export abstract class PaintBoardMenuElement {
-  protected menu: AbstractPaintBoardMenu;
+  protected menu: PaintBoardMenu;
   protected name: string;
 
-  protected constructor(menu: AbstractPaintBoardMenu, name: string) {
+  protected constructor(menu: PaintBoardMenu, name: string) {
     this.menu = menu;
     this.name = name;
   }
@@ -27,7 +27,7 @@ export class PaintBoardMenuInput extends PaintBoardMenuElement {
   private value?: string | number;
 
   private constructor(
-    menu: AbstractPaintBoardMenu,
+    menu: PaintBoardMenu,
     name: string,
     onChange?: () => void,
     value?: string | number
@@ -52,7 +52,7 @@ export class PaintBoardMenuInput extends PaintBoardMenuElement {
   static Builder = class PaintBoardMenuInputBuilder extends PaintBoardMenuElementBuilder {
     override btn: PaintBoardMenuInput;
 
-    constructor(menu: AbstractPaintBoardMenu, name: string) {
+    constructor(menu: PaintBoardMenu, name: string) {
       super();
       this.btn = new PaintBoardMenuInput(menu, name);
     }
@@ -74,7 +74,7 @@ export class PaintBoardMenuButton extends PaintBoardMenuElement {
   private active?: boolean;
 
   private constructor(
-    menu: AbstractPaintBoardMenu,
+    menu: PaintBoardMenu,
     name: string,
     onClick?: () => void,
     active?: boolean
@@ -98,7 +98,7 @@ export class PaintBoardMenuButton extends PaintBoardMenuElement {
   static Builder = class PaintBoardMenuBtnBuilder extends PaintBoardMenuElementBuilder {
     override btn: PaintBoardMenuButton;
 
-    constructor(menu: AbstractPaintBoardMenu, name: string) {
+    constructor(menu: PaintBoardMenu, name: string) {
       super();
       this.btn = new PaintBoardMenuButton(menu, name);
     }

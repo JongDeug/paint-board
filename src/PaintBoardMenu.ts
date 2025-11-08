@@ -15,10 +15,10 @@ type BtnType =
   | 'pipette'
   | 'color';
 
-export abstract class AbstractPaintBoardMenu {
+export abstract class PaintBoardMenu {
   public paintBoard: PaintBoard;
   public dom: HTMLElement;
-  protected static instance: AbstractPaintBoardMenu;
+  protected static instance: PaintBoardMenu;
 
   constructor(paintBoard: PaintBoard, dom: HTMLElement) {
     this.paintBoard = paintBoard;
@@ -30,7 +30,7 @@ export abstract class AbstractPaintBoardMenu {
   static getInstance(paintBoard: PaintBoard, dom: HTMLElement) {}
 }
 
-export class ChromePaintMenu extends AbstractPaintBoardMenu {
+export class ChromePaintMenu extends PaintBoardMenu {
   initialize(types: BtnType[]): void {
     types.forEach(this.drawButtonByType.bind(this));
   }
@@ -98,7 +98,7 @@ export class ChromePaintMenu extends AbstractPaintBoardMenu {
   }
 }
 
-export class IEPaintMenu extends AbstractPaintBoardMenu {
+export class IEPaintMenu extends PaintBoardMenu {
   initialize(types: BtnType[]): void {}
 
   static override getInstance(
