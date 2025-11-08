@@ -1,43 +1,112 @@
-export default abstract class AbstractPaintBoardMenu {
+import type { PaintBoard } from './PaintBoard.js';
+import {
+  PaintBoardMenuButton,
+  PaintBoardMenuInput,
+} from './PaintBoardMenuBtn.js';
+
+type BtnType =
+  | 'pen'
+  | 'circle'
+  | 'rectangle'
+  | 'eraser'
+  | 'back'
+  | 'forward'
+  | 'save'
+  | 'pipette'
+  | 'color';
+
+export abstract class AbstractPaintBoardMenu {
+  public paintBoard: PaintBoard;
+  public dom: HTMLElement;
   protected static instance: AbstractPaintBoardMenu;
 
-  constructor(public canvas: string | null) {
-    if (!canvas || typeof canvas !== 'string') {
-      throw new Error('Canvas 엘리먼트를 입력하세요');
-    }
+  constructor(paintBoard: PaintBoard, dom: HTMLElement) {
+    this.paintBoard = paintBoard;
+    this.dom = dom;
   }
 
-  abstract initialize(): void;
-  abstract destroy(): void;
+  abstract initialize(types: BtnType[]): void;
 
-  static getInstance(): AbstractPaintBoardMenu {
-    throw new Error('이 함수는 추상 클래스에서 호출될 수 없습니다.');
-  }
+  static getInstance(paintBoard: PaintBoard, dom: HTMLElement) {}
 }
 
 export class ChromePaintMenu extends AbstractPaintBoardMenu {
-  initialize(): void {
-    console.log(this.canvas);
+  initialize(types: BtnType[]): void {
+    types.forEach(this.drawButtonByType.bind(this));
   }
-  destroy(): void {}
 
-  static override getInstance(): ChromePaintMenu {
+  static override getInstance(
+    paintBoard: PaintBoard,
+    dom: HTMLElement
+  ): ChromePaintMenu {
     if (!this.instance) {
-      this.instance = new ChromePaintMenu('IE');
+      this.instance = new ChromePaintMenu(paintBoard, dom);
     }
     return this.instance as ChromePaintMenu;
+  }
+
+  drawButtonByType(type: BtnType) {
+    switch (type) {
+      case 'back': {
+        const btn = new PaintBoardMenuButton.Builder(this, '뒤로').build();
+        btn.draw();
+        return btn;
+      }
+      case 'forward': {
+        const btn = new PaintBoardMenuButton.Builder(this, '앞으로').build();
+        btn.draw();
+        return btn;
+      }
+      case 'color': {
+        const btn = new PaintBoardMenuInput.Builder(this, '컬러').build();
+        btn.draw();
+        return btn;
+      }
+      case 'pipette': {
+        const btn = new PaintBoardMenuButton.Builder(this, '스포이드').build();
+        btn.draw();
+        return btn;
+      }
+      case 'eraser': {
+        const btn = new PaintBoardMenuButton.Builder(this, '지우개').build();
+        btn.draw();
+        return btn;
+      }
+      case 'pen': {
+        const btn = new PaintBoardMenuButton.Builder(this, '펜').build();
+        btn.draw();
+        return btn;
+      }
+      case 'circle': {
+        const btn = new PaintBoardMenuButton.Builder(this, '원').build();
+        btn.draw();
+        return btn;
+      }
+      case 'rectangle': {
+        const btn = new PaintBoardMenuButton.Builder(this, '사각형').build();
+        btn.draw();
+        return btn;
+      }
+      case 'save': {
+        const btn = new PaintBoardMenuButton.Builder(this, '저장').build();
+        btn.draw();
+        return btn;
+      }
+      default:
+        throw new Error(`알 수 없는 타입 ${type}`);
+    }
   }
 }
 
 export class IEPaintMenu extends AbstractPaintBoardMenu {
-  initialize(): void {
-    console.log(this.canvas);
-  }
-  destroy(): void {}
+  initialize(types: BtnType[]): void {}
 
-  static override getInstance(): IEPaintMenu {
+  static override getInstance(
+    paintBoard: PaintBoard,
+    dom: HTMLElement
+  ): IEPaintMenu {
     if (!this.instance) {
-      this.instance = new IEPaintMenu('IE');
+      this.instance = new IEPaintMenu(paintBoard, dom);
     }
     return this.instance as IEPaintMenu;
   }

@@ -1,15 +1,24 @@
-import AbstractPaintBoardFactory from './PaintBoardFactory.js';
-import { ChromePaintFactory, IEPaintFactory } from './PaintBoardFactory.js';
+import { ChromePaintFactory } from './PaintBoardFactory.js';
 
-function main(board: typeof AbstractPaintBoardFactory) {
-  const paintBoard = board.createPaintBoard();
+function main() {
+  const factory = ChromePaintFactory;
+  const paintBoard = factory.createPaintBoard();
+  const paintBoardMenu = factory.createPaintBoardMenu(
+    paintBoard,
+    document.querySelector('#menu')!
+  );
   paintBoard.initialize();
-  paintBoard.destroy();
-
-  const paintBoardMenu = board.createPaintBoardMenu();
-  paintBoardMenu.initialize();
-  paintBoardMenu.destroy();
+  paintBoardMenu.initialize([
+    'back',
+    'forward',
+    'color',
+    'pipette',
+    'pen',
+    'circle',
+    'rectangle',
+    'eraser',
+    'save',
+  ]);
 }
 
-main(ChromePaintFactory);
-main(IEPaintFactory);
+main();

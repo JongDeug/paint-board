@@ -1,32 +1,45 @@
-import { AbstractPaintBoard, ChromePaint, IEPaint } from './PaintBoard';
-import { ChromePaintMenu } from './PaintBoardMenu';
+import { PaintBoard, ChromePaint, IEPaint } from './PaintBoard.js';
+import {
+  ChromePaintMenu,
+  IEPaintMenu,
+  AbstractPaintBoardMenu,
+} from './PaintBoardMenu.js';
 
-export default abstract class AbstractPaintBoardFactory {
-  static createPaintBoard(): AbstractPaintBoard {
+export abstract class PaintBoardFactory {
+  static createPaintBoard(): PaintBoard {
     throw new Error('이 함수는 추상 클래스에서 호출될 수 없습니다.');
   }
 
-  static createPaintBoardMenu(): AbstractPaintBoard {
+  static createPaintBoardMenu(
+    paintBoard: PaintBoard,
+    dom: HTMLElement
+  ): AbstractPaintBoardMenu {
     throw new Error('이 함수는 추상 클래스에서 호출될 수 없습니다.');
   }
 }
 
-export class ChromePaintFactory extends AbstractPaintBoardFactory {
+export class ChromePaintFactory extends PaintBoardFactory {
   static override createPaintBoard() {
     return ChromePaint.getInstance();
   }
 
-  static override createPaintBoardMenu(): AbstractPaintBoard {
-    return ChromePaintMenu.getInstance();
+  static override createPaintBoardMenu(
+    paintBoard: PaintBoard,
+    dom: HTMLElement
+  ) {
+    return ChromePaintMenu.getInstance(paintBoard, dom);
   }
 }
 
-export class IEPaintFactory extends AbstractPaintBoardFactory {
+export class IEPaintFactory extends PaintBoardFactory {
   static override createPaintBoard() {
     return IEPaint.getInstance();
   }
 
-  static override createPaintBoardMenu(): AbstractPaintBoard {
-    return IEPaint.getInstance();
+  static override createPaintBoardMenu(
+    paintBoard: PaintBoard,
+    dom: HTMLElement
+  ) {
+    return IEPaintMenu.getInstance(paintBoard, dom);
   }
 }

@@ -1,43 +1,40 @@
-export abstract class AbstractPaintBoard {
-  protected static instance: AbstractPaintBoard;
+export abstract class PaintBoard {
+  protected static instance: PaintBoard;
 
-  constructor(public canvas: string | null) {
-    if (!canvas || typeof canvas !== 'string') {
+  constructor(public canvas: HTMLCanvasElement | null) {
+    if (!canvas || !(canvas instanceof HTMLCanvasElement)) {
       throw new Error('Canvas 엘리먼트를 입력하세요');
     }
   }
 
   abstract initialize(): void;
-  abstract destroy(): void;
 
-  static getInstance(): AbstractPaintBoard {
+  static getInstance(): PaintBoard {
     throw new Error('이 함수는 추상 클래스에서 호출될 수 없습니다.');
   }
 }
 
-export class ChromePaint extends AbstractPaintBoard {
+export class ChromePaint extends PaintBoard {
   initialize(): void {
     console.log(this.canvas);
   }
-  destroy(): void {}
 
   static override getInstance(): ChromePaint {
     if (!this.instance) {
-      this.instance = new ChromePaint('Chrome');
+      this.instance = new ChromePaint(document.querySelector('canvas'));
     }
     return this.instance as ChromePaint;
   }
 }
 
-export class IEPaint extends AbstractPaintBoard {
+export class IEPaint extends PaintBoard {
   initialize(): void {
     console.log(this.canvas);
   }
-  destroy(): void {}
 
   static override getInstance(): IEPaint {
     if (!this.instance) {
-      this.instance = new IEPaint('IE');
+      this.instance = new IEPaint(document.querySelector('canvas'));
     }
     return this.instance as IEPaint;
   }

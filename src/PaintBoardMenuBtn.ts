@@ -1,38 +1,60 @@
-class PaintBoardMenuBtn {
-  private name: string;
-  private type: string;
-  private onClick?: () => void;
+import { AbstractPaintBoardMenu } from './PaintBoardMenu.js';
+
+export abstract class PaintBoardMenuElement {
+  protected menu: AbstractPaintBoardMenu;
+  protected name: string;
+
+  protected constructor(menu: AbstractPaintBoardMenu, name: string) {
+    this.menu = menu;
+    this.name = name;
+  }
+
+  abstract draw(): void;
+}
+
+export abstract class PaintBoardMenuElementBuilder {
+  btn!: PaintBoardMenuElement;
+
+  constructor() {}
+
+  build() {
+    return this.btn;
+  }
+}
+
+export class PaintBoardMenuInput extends PaintBoardMenuElement {
   private onChange?: () => void;
-  private active?: boolean;
   private value?: string | number;
 
   private constructor(
+    menu: AbstractPaintBoardMenu,
     name: string,
-    type: string,
-    onClick?: () => void,
     onChange?: () => void,
-    active?: boolean,
     value?: string | number
   ) {
-    this.name = name;
-    this.type = type;
-    this.onClick = onClick;
+    super(menu, name);
+
     this.onChange = onChange;
-    this.active = active;
     this.value = value;
   }
 
-  // 코드에서 강제로 해놓지 않으면 사람은 실수를 하는 법.
-  static Builder = class PaintBoardMenuBtnBuilder {
-    btn: PaintBoardMenuBtn;
-
-    constructor(name: string, type: string) {
-      this.btn = new PaintBoardMenuBtn(name, type);
+  override draw() {
+    const btn = document.createElement('input');
+    btn.type = 'color';
+    btn.title = this.name;
+    if (this.onChange) {
+      btn.addEventListener('change', this.onChange.bind(this));
     }
+    this.menu.dom.append(btn);
+  }
 
-    setOnClick(onClick: () => void) {
-      this.btn.onClick = onClick;
-      return this;
+  // 코드에서 강제로 해놓지 않으면 사람은 실수를 하는 법.
+  static Builder = class PaintBoardMenuInputBuilder extends PaintBoardMenuElementBuilder {
+    override btn: PaintBoardMenuInput;
+
+    constructor(menu: AbstractPaintBoardMenu, name: string) {
+      super();
+      this.btn = new PaintBoardMenuInput(menu, name);
     }
 
     setOnChange(onChange: () => void) {
@@ -40,25 +62,55 @@ class PaintBoardMenuBtn {
       return this;
     }
 
-    setActive(active: boolean) {
-      this.btn.active = active;
-      return this;
-    }
-
     setValue(value: string | number) {
       this.btn.value = value;
       return this;
     }
-
-    build() {
-      return this.btn;
-    }
   };
 }
 
-// 버튼을 반환해야하므로
-// 체이닝을 하려면
-const backBtn = new PaintBoardMenuBtn.Builder('뒤로', 'back')
-  .setOnClick(() => {})
-  .setValue('value')
-  .build();
+export class PaintBoardMenuButton extends PaintBoardMenuElement {
+  private onClick?: () => void;
+  private active?: boolean;
+
+  private constructor(
+    menu: AbstractPaintBoardMenu,
+    name: string,
+    onClick?: () => void,
+    active?: boolean
+  ) {
+    super(menu, name);
+
+    this.onClick = onClick;
+    this.active = active;
+  }
+
+  override draw(): void {
+    const btn = document.createElement('button');
+    btn.textContent = this.name;
+    if (this.onClick) {
+      btn.addEventListener('click', this.onClick.bind(this));
+    }
+    this.menu.dom.append(btn);
+  }
+
+  // 코드에서 강제로 해놓지 않으면 사람은 실수를 하는 법.
+  static Builder = class PaintBoardMenuBtnBuilder extends PaintBoardMenuElementBuilder {
+    override btn: PaintBoardMenuButton;
+
+    constructor(menu: AbstractPaintBoardMenu, name: string) {
+      super();
+      this.btn = new PaintBoardMenuButton(menu, name);
+    }
+
+    setOnClick(onClick: () => void) {
+      this.btn.onClick = onClick;
+      return this;
+    }
+
+    setActive(active: boolean) {
+      this.btn.active = active;
+      return this;
+    }
+  };
+}
